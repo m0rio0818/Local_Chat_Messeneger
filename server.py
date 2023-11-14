@@ -13,6 +13,7 @@ class Server:
             os.unlink(self.server_address)
         except FileNotFoundError:
             pass
+
         print("Starting up on {}".format(self.server_address))
         self.bind()
         self.accept()
@@ -22,29 +23,30 @@ class Server:
         self.sock.listen(1)
     
     def accept(self):
-        # 受信を続ける。
+        faker = Faker()
         while True:
             connection, client_address = self.sock.accept()
-            print("Connection from", client_address)
-            self.recive(connection, client_address)
-    
-    def recive(self, connection, client_address):
-        while True:
-            data = connection.recv(32)
-            data_str = data.decode("utf-8")
-            print("Recived Data: ", data_str)
-            self.send(connection, client_address, data)
-    
-    def send(self, connection, address ,data):
-        if data:
-            response = "Processing: " + data
-            connection.sendall(data.encode(),response)
-        else:
-            print("No data from", address)
-        
+            try:
+                print("Connection from", client_address)
+                while True:
+                    data = connection.recv(32)
+                    data_str = data.decode("utf-8")
+                    print("Recived ", data_str)
+                    
+                    if data:
+                        responose = "Hello " + faker.name() + " san, " + faker.address()
+                        bResponse = bytes(responose, "utf-8")
+                        connection.sendall(bResponse)
+                    else:
+                        print("no data from ", client_address)
+                        break
+            finally:
+                print("Closing current connection")
+                connection.close()
+                
 def main():
     server = Server()
     server.start()
         
-if __name__ == "main":
+if __name__ == "__main__":
     main()
