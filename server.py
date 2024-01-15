@@ -15,10 +15,10 @@ class Server:
             pass
 
         print("Starting up on {}".format(self.server_address))
-        self.bind()
+        self.connect()
         self.accept()
         
-    def bind(self):
+    def connect(self):
         self.sock.bind(self.server_address)
         self.sock.listen(1)
     
@@ -34,9 +34,8 @@ class Server:
                     print("Recived ", data_str)
                     
                     if data:
-                        responose = "Hello " + faker.name() + " san, " + faker.address()
-                        bResponse = bytes(responose, "utf-8")
-                        connection.sendall(bResponse)
+                        responose = b"Hello " + faker.name() + " san, from " + faker.address()
+                        connection.sendall(responose)
                     else:
                         print("no data from ", client_address)
                         break

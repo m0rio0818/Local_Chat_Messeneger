@@ -19,14 +19,14 @@ class Client:
             sys.exit(1)
               
     def sendMessage(self):
-        message = input("input data you want to send to the server: ")
+        message = input("input data which you want to send to the server: ")
         bMessage = bytes(message, "utf-8")
         self.sock.sendall(bMessage)
         self.sock.settimeout(2)
         
         try:
             while True:
-                data = str(self.sock.recv(4096))
+                data = self.sock.recv(4096).decode()
                 if data:
                     print("Server response : ", data)
                 else:
